@@ -3,7 +3,6 @@ import { withStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import Fab from '@material-ui/core/Fab';
 import Dialog from '@material-ui/core/Dialog';
-import InventoryList from "./inventory";
 import selector from "./images/selector.png";
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
@@ -13,23 +12,12 @@ import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
-import Draggable from 'react-draggable';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
-import Avatar from '@material-ui/core/Avatar';
 import Grid from "@material-ui/core/Grid";
-import Paper from '@material-ui/core/Paper';
-
 
 import AddIcon from '@material-ui/icons/Add';
 import ClearIcon from '@material-ui/icons/Clear';
@@ -37,6 +25,11 @@ import KitchenIcon from '@material-ui/icons/Kitchen';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import RestaurantIcon from '@material-ui/icons/Restaurant';
 import DateRangeIcon from '@material-ui/icons/DateRange';
+
+import InventoryList from "./inventory";
+import ShoppingList from "./shopping";
+import RecipeList from "./recipes";
+import Planner from "./planner";
 
 const styles = {
   //these can be useful stylers and will show up in google results.
@@ -71,22 +64,14 @@ function TabPanel(props) {
 class MyComponent extends Component {
   constructor(props) {
     super(props);
-    // All these components need to get built
-    // Once you've built it you can uncomment the corresponding line in the render
-    // and change that component here to true and inventory to false
-    // I'll build the buttons to do that later
     this.state = {
-      inventory: true,
-      shopping: false,
-      recipes: false,
-      planner: false,
-
-      //other stuf
-      design_a: true,
+      design_a: false,
       add_open: false,
       tab_value: 0,
-
       add_inventory: false,
+      add_inventory_item: false,
+      item_type: "",
+      item_days: 0,
     };
   }
 
@@ -106,8 +91,62 @@ class MyComponent extends Component {
   }
   addToPlanner() {console.log("Planner Button")}
   addToScanner() {console.log("Scanner Button")}
+  handleInventoryAddClose(){this.setState({add_inventory_item: false});}
 
+  handleAddItem(type, days){
+    this.setState({
+      add_inventory: false, 
+      add_inventory_item: true, 
+      item_type: type,
+      item_days: days
+    });
+  }
 
+  renderAddItem(){
+    let emoji;
+    if(this.state.item_type == "Produce"){
+      emoji = "🥑";
+    }else if(this.state.item_type == "Meat"){
+      emoji = "🥩";
+    }else if(this.state.item_type == "Dairy"){
+      emoji = "🐄";
+    }else if(this.state.item_type == "Fruit"){
+      emoji = "🍅";
+    }else{
+      emoji = "🍆";
+    }
+    return(
+      <Dialog 
+          className="inventory-add-B"
+          open={this.state.add_inventory_item} 
+          onClose={()=>this.handleInventoryAddClose()}
+        >
+          <DialogTitle id="form-dialog-title">Add {this.state.item_type} to Inventory</DialogTitle>
+          <DialogContent>
+            <TextField
+              autoFocus
+              label="Item Name"
+              type="label"
+              defaultValue={emoji}
+            />
+            <p></p>
+            <TextField
+              label="Days until Expiry"
+              type="number"
+              defaultValue={this.state.item_days}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={()=>this.handleInventoryAddClose()} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={()=>this.handleInventoryAddClose()} color="primary">
+              Add
+            </Button>
+          </DialogActions>
+        </Dialog>
+    )
+  }
 
   design_B(){
     return(
@@ -151,22 +190,30 @@ class MyComponent extends Component {
             <Grid container justify="center" spacing={2}>
                 <Grid item>
                   <Card className="inventory-item-add-A">
-                    <ListItem button><ListItemText primary="🥑 Produce"/></ListItem>
+                    <ListItem button
+                      onClick={()=>this.handleAddItem("Produce", 7)}
+                    ><ListItemText primary="🥑 Produce"/></ListItem>
                   </Card>
                 </Grid>
                 <Grid item>
                   <Card className="inventory-item-add-A">
-                    <ListItem button><ListItemText primary="🥩 Meat"/></ListItem>
+                    <ListItem button
+                     onClick={()=>this.handleAddItem("Meat", 5)}
+                    ><ListItemText primary={"🥩 Meat"}/></ListItem>
                   </Card>
                 </Grid>
                 <Grid item>
                   <Card className="inventory-item-add-A">
-                    <ListItem button><ListItemText primary="🐄 Dairy"/></ListItem>
+                    <ListItem button
+                      onClick={()=>this.handleAddItem("Dairy", 10)}
+                    ><ListItemText primary="🐄 Dairy"/></ListItem>
                   </Card>
                 </Grid>
                 <Grid item>
                   <Card className="inventory-item-add-A">
-                    <ListItem button><ListItemText primary="🍅 Fruit"/></ListItem>
+                    <ListItem button
+                      onClick={()=>this.handleAddItem("Fruit", 4)}
+                    ><ListItemText primary="🍅 Fruit"/></ListItem>
                   </Card>
                 </Grid>
             </Grid>
@@ -263,28 +310,22 @@ class MyComponent extends Component {
                 <Tab icon={<ShoppingCartIcon/>}/>
                 <Tab icon={<RestaurantIcon/>}/>
                 <Tab icon={<DateRangeIcon/>}/>
-
-                {/* {this.state.inventory ? <InventoryList/> : null } */}
-                {/* {this.state.shopping ? <ShoppingList/> : null }  */}
-                {/* {this.state.recipes ? <RecipeList/> : null }  */}
-                {/* {this.state.planner ? <Planner/> : null }*/}
-                {/* ALL THESE NEED TO GET BUILT, CHECK inventory.js on example */}
+                {this.state.add_inventory_item ? this.renderAddItem() : null}
                 {this.state.add_inventory ? this.inventoryAdd() : null}
                 {this.state.design_a ? this.design_A() : this.design_B()}
               </Tabs>
             </AppBar>
             <TabPanel value={this.state.tab_value} index={0}>
-              Inventory
               <InventoryList/>
             </TabPanel>
             <TabPanel value={this.state.tab_value} index={1}>
-              Shopping List
+              <ShoppingList/>
             </TabPanel>
             <TabPanel value={this.state.tab_value} index={2}>
-              Recipes
+              <RecipeList/>
             </TabPanel>
             <TabPanel value={this.state.tab_value} index={3}>
-              Planner
+              <Planner/>
             </TabPanel>
           </div>
             <Fab 

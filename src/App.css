@@ -17,7 +17,7 @@
 }
 
 .inventory_item{
-  width: 87%;
+  width: 95%;
   margin: 1px;
 }
 .product-image{
@@ -141,6 +141,22 @@
 .inventory-item-add-A {
   display: flex;
   justify-content: center;
-  height: 100px;
-  width: 120px;
+  height: 125px;
+  width: 125px;
+  background-color:#ea7844 !important;
+  
+}
+.inventory-item-add-A :hover{
+  background-color: #f2ae90 !important;
+}
+
+
+.inventory-item-add-A .MuiTypography-root{
+  text-align: center;
+  color: white;
+  font-weight: bold;
+}
+
+.MuiBox-root {
+  height: 500px
 }
