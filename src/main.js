@@ -17,7 +17,13 @@ import TextField from '@material-ui/core/TextField';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Grid from "@material-ui/core/Grid";
+import milk from "./images/milk.png";
+import cheese from "./images/cheese.png";
+import eggs from "./images/eggs.png";
+import Avatar from '@material-ui/core/Avatar';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 
 import AddIcon from '@material-ui/icons/Add';
 import ClearIcon from '@material-ui/icons/Clear';
@@ -25,15 +31,15 @@ import KitchenIcon from '@material-ui/icons/Kitchen';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import RestaurantIcon from '@material-ui/icons/Restaurant';
 import DateRangeIcon from '@material-ui/icons/DateRange';
+import NotificationIcon from '@material-ui/icons/Notifications';
+import NoNotificationIcon from '@material-ui/icons/NotificationsNone';
+import IconButton from '@material-ui/core/IconButton';
 
-import InventoryList from "./inventory";
 import ShoppingList from "./shopping";
 import RecipeList from "./recipes";
 import Planner from "./planner";
 
 const styles = {
-  //these can be useful stylers and will show up in google results.
-  //but usually you'll just use css
   root: {
     flexGrow: 1,
   },
@@ -72,6 +78,28 @@ class MyComponent extends Component {
       add_inventory_item: false,
       item_type: "",
       item_days: 0,
+      temp_item_name: "",
+      temp_item_days: 0,
+      items: [
+        {
+          name: "Milk 2%",
+          expires: "3",
+          checked: true,
+          image: milk
+        },
+        {
+          name: "Cheese",
+          expires: "4",
+          checked: false,
+          image: cheese
+        },
+        {
+          name: "Eggs",
+          expires: "6",
+          checked: false,
+          image: eggs
+        }
+      ],
     };
   }
 
@@ -98,23 +126,30 @@ class MyComponent extends Component {
       add_inventory: false, 
       add_inventory_item: true, 
       item_type: type,
-      item_days: days
+      item_emoji: this.getEmoji(type),
+      item_days: days,
+      temp_item_days: days,
+      temp_item_name: this.getEmoji(type),
     });
   }
 
-  renderAddItem(){
+  getEmoji(type){
     let emoji;
-    if(this.state.item_type == "Produce"){
+    if(type == "Produce"){
       emoji = "🥑";
-    }else if(this.state.item_type == "Meat"){
+    }else if(type == "Meat"){
       emoji = "🥩";
-    }else if(this.state.item_type == "Dairy"){
+    }else if(type == "Dairy"){
       emoji = "🐄";
-    }else if(this.state.item_type == "Fruit"){
+    }else if(type == "Fruit"){
       emoji = "🍅";
     }else{
       emoji = "🍆";
     }
+    return emoji;
+  }
+
+  renderAddItem(){
     return(
       <Dialog 
           className="inventory-add-B"
@@ -127,20 +162,22 @@ class MyComponent extends Component {
               autoFocus
               label="Item Name"
               type="label"
-              defaultValue={emoji}
+              defaultValue={this.state.item_emoji}
+              onChange={(event)=>this.handleNameChange(event.target.value)}
             />
             <p></p>
             <TextField
               label="Days until Expiry"
               type="number"
               defaultValue={this.state.item_days}
+              onChange={(event)=>this.handleDaysChange(event.target.value)}
             />
           </DialogContent>
           <DialogActions>
             <Button onClick={()=>this.handleInventoryAddClose()} color="primary">
               Cancel
             </Button>
-            <Button onClick={()=>this.handleInventoryAddClose()} color="primary">
+            <Button onClick={()=>this.addItem()} color="primary">
               Add
             </Button>
           </DialogActions>
@@ -174,6 +211,24 @@ class MyComponent extends Component {
         </Dialog>
       </div>
     )
+  }
+
+  addItem(){
+    let new_items = this.state.items;
+    new_items.push({
+      name: this.state.temp_item_name,
+      expires: this.state.temp_item_days,
+      checked: false,
+    })
+    this.setState({items: new_items, add_inventory: false, add_inventory_item: false});
+  }
+
+  handleNameChange(value){
+    this.setState({temp_item_name: value});
+  }
+
+  handleDaysChange(value){
+    this.setState({temp_item_days: value});
   }
 
   inventoryAdd(){
@@ -238,18 +293,21 @@ class MyComponent extends Component {
               autoFocus
               label="Item Name"
               type="label"
+              onChange={(event)=>this.handleNameChange(event.target.value)}
             />
             <p></p>
             <TextField
               label="Days until Expiry"
               type="number"
+              ref="item_days"
+              onChange={(event)=>this.handleDaysChange(event.target.value)}
             />
           </DialogContent>
           <DialogActions>
             <Button onClick={()=>this.handleInventoryClose()} color="primary">
               Cancel
             </Button>
-            <Button onClick={()=>this.handleInventoryClose()} color="primary">
+            <Button onClick={()=>this.addItem()} color="primary">
               Add
             </Button>
           </DialogActions>
@@ -297,7 +355,36 @@ class MyComponent extends Component {
     )
   }
 
-
+  render_inventory_item(item, id) {
+    let new_items = this.state.items;
+    return(
+      <Card className="inventory_item">
+        <ListItem button>
+          <ListItemAvatar>
+            <Avatar 
+              variant="square" 
+              className={'product-image'}
+              src={item.image}
+            />
+          </ListItemAvatar>
+          <ListItemText 
+            primary={item.name}
+            secondary={"Expires in "+item.expires+" days"}
+          />
+          <ListItemSecondaryAction>
+              <IconButton 
+                onClick={()=> {
+                  new_items[id].checked = !item.checked;
+                  this.setState({items: new_items})
+                }}
+              >
+                {item.checked ? <NotificationIcon/> : <NoNotificationIcon/>}
+              </IconButton>
+            </ListItemSecondaryAction>
+        </ListItem>
+      </Card>
+    )
+  }
 
   render() {
     const { classes } = this.props;
@@ -316,7 +403,9 @@ class MyComponent extends Component {
               </Tabs>
             </AppBar>
             <TabPanel value={this.state.tab_value} index={0}>
-              <InventoryList/>
+              <Grid className="inventory_grid">
+                {this.state.items.map((item, id) => this.render_inventory_item(item, id))}
+              </Grid>
             </TabPanel>
             <TabPanel value={this.state.tab_value} index={1}>
               <ShoppingList/>
