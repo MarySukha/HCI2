@@ -25,9 +25,9 @@
   width: 50px !important;
 }
 
-.fab-add{
+/* .fab-add{
   display: block;
-}
+} */
 
 .MuiFab-secondary{
   background-color: #ea7844 !important;
@@ -53,7 +53,7 @@
   justify-content: center;
 }
 
-.add-button .MuiPaper-root
+.add-button-B .MuiPaper-root
 {
   border-radius: 50%;
   background-image: url(./images/selector.png); 
@@ -61,6 +61,11 @@
   height: 360px;
   width: 360px;
 }
+/* 
+.add-button-A .MuiPaper-root
+{
+  
+} */
 
 .selector-image{
   margin-top: -06px;
@@ -93,6 +98,49 @@
   min-width: 90px !important;
 }
 
-/* .MuiTabs-indicator{
-  width: 90px !important;
-} */
+#add-shopping{
+  left: 90px;
+  top: -400px;
+  min-height: 85px !important;
+  min-width: 180px !important;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+#add-inventory{
+  left: 90px;
+  top: -250px;
+  min-height: 85px !important;
+  min-width: 180px !important;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+#add-planner{
+  left: 20px;
+  top: -500px;
+  min-height: 180px !important;
+  min-width: 85px !important;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+#add-scanner{
+  left: 260px;
+  top: -680px;
+  min-height: 180px !important;
+  min-width: 85px !important;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.MuiDialog-paperWidthSm{
+  width: 300px;
+  overflow: hidden;
+}
+.inventory-item-add-A {
+  display: flex;
+  justify-content: center;
+  height: 100px;
+  width: 120px;
+}
