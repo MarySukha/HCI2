@@ -52,3 +52,47 @@
   align-items: center;
   justify-content: center;
 }
+
+.add-button .MuiPaper-root
+{
+  border-radius: 50%;
+  background-image: url(./images/selector.png); 
+  overflow: hidden;
+  height: 360px;
+  width: 360px;
+}
+
+.selector-image{
+  margin-top: -06px;
+}
+
+#clear-icon {
+  display: block;
+  left: 150px;
+  top: -208px;
+  min-height: 65px;
+  width: 65px;
+  padding-top: 5px;
+}
+
+#clear-icon .MuiSvgIcon-root {
+  width: 30px;
+  height: 30px;
+}
+
+.AppBar {
+  margin-left: 18px;
+  max-width: 89.5%;
+}
+
+.MuiAppBar-colorPrimary {
+  background-color: #ea7844 !important;
+}
+
+.MuiTab-root{
+  min-width: 90px !important;
+}
+
+/* .MuiTabs-indicator{
+  width: 90px !important;
+} */
